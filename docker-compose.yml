@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    image: tic-tac-toe-backend:1.0
+    ports:
+      - "50051:50051"
+    container_name: gamebackend
+
+  proxy:
+    image: envoyproxy/envoy:dev-1ea7314775280dc6adbfead0a3b2e5b4a4ce623e
+    ports:
+      - "9901:9901"
+      - "8080:8080"
+    volumes:
+      - ./proxy/envoy2.yaml:/envoy2.yaml
+    container_name: envoyproxy
+    command: ["-c", "/envoy2.yaml"]
+    depends_on:
+      backend:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    image: tic-tac-toe-frontend:1.0
+    ports:
+      - "3000:3000"
+    container_name: gamefrontend
+    depends_on:
+      proxy:
+        condition: service_started
