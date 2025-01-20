@@ -10,7 +10,7 @@ import (
 
 	// "time"
 
-	game "game_backend/proto/game_backend" // Replace with the actual path to your game package
+	game "game_backend/proto/game_backend"
 
 	"google.golang.org/grpc"
 )
@@ -44,17 +44,6 @@ func (s *GameServer) CreateGame(ctx context.Context, req *game.CreateGameRequest
 	}
 
 	s.createdGames[gameID] = gameState
-
-	// Simulate waiting for Player B
-	// go func() {
-	// 	for {
-	// 		if gameState.PlayerB != "" {
-	// 			break
-	// 		}
-	// 		time.Sleep(30 * time.Second)
-	// 	}
-	// 	// gameState.NotifyA <- fmt.Sprintf("%s has joined the game", gameState.PlayerB)
-	// }()
 
 	return &game.CreateGameResponse{GameId: gameID}, nil
 }
